@@ -46,6 +46,18 @@ function minutesSince(iso) {
   return Math.max(0, Math.round((Date.now() - moment) / 60000));
 }
 
+/* Время показываем коротко: на экране телефона `2026-09-27T11:54:13+00:00` съедает половину
+ * ширины таблицы и вытесняет колонку со статусом, ради которой в таблицу и смотрят. */
+function shortTime(iso) {
+  if (!iso) return '—';
+  const moment = new Date(iso.replace(' ', 'T'));
+  if (Number.isNaN(moment.getTime())) return String(iso);
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${pad(moment.getUTCDate())}.${pad(moment.getUTCMonth() + 1)} ${pad(
+    moment.getUTCHours(),
+  )}:${pad(moment.getUTCMinutes())}`;
+}
+
 function humanAge(minutes) {
   if (minutes === null) return '—';
   if (minutes < 1) return 'только что';
@@ -154,9 +166,9 @@ function renderRuns(rows) {
     return;
   }
   $('runs').innerHTML = table(
-    ['начало', 'стадия', 'кандидат', 'итог', 'ходов', 'оценка, $'],
+    ['начало (UTC)', 'стадия', 'кандидат', 'итог', 'ходов', 'оценка, $'],
     rows.map((row) => [
-      cell(row.started_at || '—', 'id'),
+      cell(shortTime(row.started_at), 'id'),
       cell(row.stage),
       cell(row.candidate || '—'),
       `<td><span class="badge ${esc(row.status)}">${esc(row.status)}</span></td>`,

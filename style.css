@@ -73,7 +73,14 @@ code { font-family: var(--mono); font-size: .92em; }
 .now-stage { font: 600 16px var(--mono); color: var(--run); }
 .now-empty { color: var(--muted); }
 
-.table-wrap { overflow-x: auto; }
+/* Таблица всё равно может не влезть в 430px, но горизонтальная прокрутка не должна прятать
+   статус: колонку с идентификатором разрешаем переносить, остальное держим в одну строку. */
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media (max-width: 560px) {
+  td.id, td:first-child { white-space: normal; word-break: break-word; max-width: 13ch; }
+  table { font-size: 12px; }
+  th, td { padding-right: 8px; }
+}
 table { border-collapse: collapse; width: 100%; font-size: 13px; }
 th, td { text-align: left; padding: 6px 10px 6px 0; white-space: nowrap; }
 th { color: var(--muted); font-weight: 500; border-bottom: 1px solid var(--line); }

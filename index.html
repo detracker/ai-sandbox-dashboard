@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>AI-Sandbox</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>◵</text></svg>">
+</head>
+<body>
+<header>
+  <h1>AI-Sandbox</h1>
+  <div class="head-right">
+    <span id="age" class="age" title="возраст снимка">—</span>
+    <button id="refresh" type="button" title="обновить сейчас">↻</button>
+  </div>
+</header>
+
+<main>
+  <!-- Первым блоком то, ради чего человек открывает страницу: от него чего-то ждут. -->
+  <section id="awaiting-box" class="card accent hidden">
+    <h2>Ждёт решения</h2>
+    <div id="awaiting"></div>
+    <p class="hint">Решение принимается командой <code>sandboxctl approve &lt;id&gt;</code> или
+      кнопкой в Telegram. Дашборд только показывает.</p>
+  </section>
+
+  <section id="now-box" class="card">
+    <h2>Сейчас</h2>
+    <div id="now" class="now-empty">ничего не выполняется</div>
+  </section>
+
+  <section class="card">
+    <h2>Очередь <span id="queue-count" class="muted"></span></h2>
+    <div id="queue" class="table-wrap"></div>
+  </section>
+
+  <section class="grid2">
+    <div class="card">
+      <h2>Расход за сутки</h2>
+      <div id="totals"></div>
+      <p class="hint" id="cost-note"></p>
+    </div>
+    <div class="card">
+      <h2>Доступы</h2>
+      <div id="doctor" class="chips muted">нет данных</div>
+      <p class="hint">Результат последнего прогона <code>sandboxctl doctor</code>.
+        Причины отказов остаются на боксе: страница публичная.</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Последние прогоны</h2>
+    <div id="runs" class="table-wrap"></div>
+  </section>
+</main>
+
+<footer>
+  <span id="source" class="muted"></span>
+  <span class="muted">read-only · данные обновляются раз в 2 минуты, кэш raw до ~5 минут</span>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

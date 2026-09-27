@@ -1,0 +1,102 @@
+/* Плотный однокрановый вид: смотрят с телефона, поэтому сначала мобильная раскладка. */
+:root {
+  --bg: #f7f7f8;
+  --card: #ffffff;
+  --line: #e3e3e6;
+  --ink: #17171a;
+  --muted: #6c6c75;
+  --accent: #b45309;
+  --accent-bg: #fff7ed;
+  --ok: #15803d;
+  --fail: #b91c1c;
+  --run: #1d4ed8;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131316;
+    --card: #1c1c21;
+    --line: #2e2e36;
+    --ink: #ececf1;
+    --muted: #9a9aa5;
+    --accent: #fbbf24;
+    --accent-bg: #2a2109;
+    --ok: #4ade80;
+    --fail: #f87171;
+    --run: #93b4ff;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131316; --card: #1c1c21; --line: #2e2e36; --ink: #ececf1; --muted: #9a9aa5;
+  --accent: #fbbf24; --accent-bg: #2a2109; --ok: #4ade80; --fail: #f87171; --run: #93b4ff;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  padding: 0 16px 32px;
+}
+header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; padding: 18px 0 12px; position: sticky; top: 0; background: var(--bg);
+  border-bottom: 1px solid var(--line); margin-bottom: 16px; z-index: 2;
+}
+h1 { font-size: 17px; margin: 0; letter-spacing: .02em; }
+h2 { font-size: 13px; margin: 0 0 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.head-right { display: flex; align-items: center; gap: 10px; }
+.age { font: 12px/1 var(--mono); color: var(--muted); }
+.age.stale { color: var(--fail); }
+button {
+  background: var(--card); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 14px;
+}
+main { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+.card.accent { border-color: var(--accent); background: var(--accent-bg); }
+.grid2 { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+.hidden { display: none; }
+.muted { color: var(--muted); }
+.hint { color: var(--muted); font-size: 12px; margin: 10px 0 0; }
+code { font-family: var(--mono); font-size: .92em; }
+
+/* Ожидание решения: строка крупная, возраст ожидания — главный сигнал. */
+.await-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px; padding: 6px 0; }
+.await-row + .await-row { border-top: 1px dashed var(--line); }
+.await-id { font: 600 16px var(--mono); }
+.await-age { color: var(--accent); font-weight: 600; }
+
+.now-line { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline; }
+.now-stage { font: 600 16px var(--mono); color: var(--run); }
+.now-empty { color: var(--muted); }
+
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; padding: 6px 10px 6px 0; white-space: nowrap; }
+th { color: var(--muted); font-weight: 500; border-bottom: 1px solid var(--line); }
+tbody tr + tr td { border-top: 1px solid var(--line); }
+td.id, td.num { font-family: var(--mono); }
+td.num { text-align: right; padding-right: 14px; }
+
+.badge { font: 12px/1.6 var(--mono); padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); }
+.badge.awaiting_review { color: var(--accent); border-color: var(--accent); }
+.badge.running, .badge.analyzing, .badge.critiquing, .badge.implementing { color: var(--run); border-color: var(--run); }
+.badge.done, .badge.ok { color: var(--ok); border-color: var(--ok); }
+.badge.blocked, .badge.failed, .badge.rejected, .badge.timeout { color: var(--fail); border-color: var(--fail); }
+
+.totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+.metric-value { font: 600 20px/1.2 var(--mono); }
+.metric-label { color: var(--muted); font-size: 12px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 12px/1.6 var(--mono); padding: 1px 8px; border-radius: 6px; border: 1px solid var(--line); }
+.chip.ok { color: var(--ok); border-color: var(--ok); }
+.chip.fail { color: var(--fail); border-color: var(--fail); background: color-mix(in srgb, var(--fail) 10%, transparent); }
+
+footer {
+  max-width: 1100px; margin: 20px auto 0; display: flex; flex-wrap: wrap; gap: 6px 16px;
+  justify-content: space-between; font-size: 12px;
+}

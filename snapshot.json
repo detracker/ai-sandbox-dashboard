@@ -1,0 +1,563 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-03T23:07:06Z",
+  "now": null,
+  "queue": [
+    {
+      "id": "aave-v3-dai",
+      "chain": "ethereum",
+      "status": "rejected",
+      "round": 1,
+      "status_changed": "2026-10-02 12:48:30Z",
+      "minutes_in_status": 2058,
+      "protocol": "AAVE V3",
+      "verdict": "needs_human",
+      "findings": 4
+    },
+    {
+      "id": "aave-v3-usdc",
+      "chain": "ethereum",
+      "status": "done",
+      "round": 2,
+      "status_changed": "2026-09-29 13:28:05Z",
+      "minutes_in_status": 6339,
+      "protocol": "AAVE V3",
+      "verdict": "pass",
+      "findings": 2
+    },
+    {
+      "id": "aave-v3-usdt",
+      "chain": "ethereum",
+      "status": "rejected",
+      "round": 1,
+      "status_changed": "2026-10-02 12:31:49Z",
+      "minutes_in_status": 2075,
+      "protocol": "AAVE V3",
+      "verdict": "needs_human",
+      "findings": 3
+    },
+    {
+      "id": "aave-v3-weth",
+      "chain": "ethereum",
+      "status": "rejected",
+      "round": 3,
+      "status_changed": "2026-10-02 03:59:59Z",
+      "minutes_in_status": 2587,
+      "protocol": "AAVE V3"
+    },
+    {
+      "id": "compound-v3-usdt",
+      "chain": "ethereum",
+      "status": "rejected",
+      "round": 1,
+      "status_changed": "2026-10-02 12:26:05Z",
+      "minutes_in_status": 2081,
+      "protocol": "Compound V3",
+      "verdict": "needs_human",
+      "findings": 5
+    },
+    {
+      "id": "compound-v3-weth",
+      "chain": "ethereum",
+      "status": "rejected",
+      "round": 1,
+      "status_changed": "2026-10-02 04:00:12Z",
+      "minutes_in_status": 2586,
+      "protocol": "Compound V3",
+      "verdict": "needs_human",
+      "findings": 5
+    },
+    {
+      "id": "curve-lending-crvusd-sreusd",
+      "chain": "ethereum",
+      "status": "awaiting_review",
+      "round": 1,
+      "status_changed": "2026-10-03 06:36:09Z",
+      "minutes_in_status": 990,
+      "protocol": "Curve Lending (LlamaLend)",
+      "verdict": "pass",
+      "findings": 4,
+      "open_questions": null
+    },
+    {
+      "id": "ethena-susde",
+      "chain": "ethereum",
+      "status": "rejected",
+      "round": 2,
+      "status_changed": "2026-10-02 12:29:38Z",
+      "minutes_in_status": 2077,
+      "protocol": "Ethena",
+      "verdict": "pass",
+      "findings": 5
+    },
+    {
+      "id": "fluid-fusdc",
+      "chain": "ethereum",
+      "status": "done",
+      "round": 1,
+      "status_changed": "2026-10-03 06:13:16Z",
+      "minutes_in_status": 1013,
+      "protocol": "Fluid",
+      "verdict": "pass",
+      "findings": 4
+    },
+    {
+      "id": "fluid-fusdt",
+      "chain": "ethereum",
+      "status": "rejected",
+      "round": 0,
+      "status_changed": "2026-10-03 05:56:11Z",
+      "minutes_in_status": 1030,
+      "protocol": "Fluid"
+    },
+    {
+      "id": "frax-sfrxusd",
+      "chain": "ethereum",
+      "status": "blocked",
+      "round": 0,
+      "status_changed": "2026-10-03 07:10:58Z",
+      "minutes_in_status": 956,
+      "protocol": "Frax Finance (sfrxUSD)"
+    },
+    {
+      "id": "lido-steth",
+      "chain": "ethereum",
+      "status": "rejected",
+      "round": 1,
+      "status_changed": "2026-10-02 04:00:32Z",
+      "minutes_in_status": 2586,
+      "protocol": "Lido",
+      "verdict": "pass",
+      "findings": 5
+    },
+    {
+      "id": "maple-syrup-usdc",
+      "chain": "ethereum",
+      "status": "done",
+      "round": 3,
+      "status_changed": "2026-10-02 15:24:49Z",
+      "minutes_in_status": 1902,
+      "protocol": "Maple Finance (Syrup)",
+      "verdict": "pass",
+      "findings": 4
+    },
+    {
+      "id": "maple-syrup-usdt",
+      "chain": "ethereum",
+      "status": "rejected",
+      "round": 0,
+      "status_changed": "2026-10-03 05:56:11Z",
+      "minutes_in_status": 1030,
+      "protocol": "Maple Finance (Syrup)"
+    },
+    {
+      "id": "morpho-blue-cbbtc-usdc",
+      "chain": "ethereum",
+      "status": "rejected",
+      "round": 1,
+      "status_changed": "2026-10-02 12:46:28Z",
+      "minutes_in_status": 2060,
+      "protocol": "Morpho Blue",
+      "verdict": "pass",
+      "findings": 7
+    },
+    {
+      "id": "morpho-oc-1337-usdc",
+      "chain": "ethereum",
+      "status": "rejected",
+      "round": 2,
+      "status_changed": "2026-10-02 13:00:34Z",
+      "minutes_in_status": 2046,
+      "protocol": "Morpho Onchain",
+      "verdict": "pass",
+      "findings": 5
+    },
+    {
+      "id": "morpho-oc-adpend-usdc",
+      "chain": "ethereum",
+      "status": "done",
+      "round": 1,
+      "status_changed": "2026-10-02 05:41:58Z",
+      "minutes_in_status": 2485,
+      "protocol": "Morpho Onchain",
+      "verdict": "needs_human",
+      "findings": 5
+    },
+    {
+      "id": "morpho-oc-steakusdc",
+      "chain": "ethereum",
+      "status": "done",
+      "round": 3,
+      "status_changed": "2026-10-02 05:26:49Z",
+      "minutes_in_status": 2500,
+      "protocol": "Morpho Onchain",
+      "verdict": "needs_human",
+      "findings": 5
+    },
+    {
+      "id": "sdai-dsr",
+      "chain": "ethereum",
+      "status": "rejected",
+      "round": 1,
+      "status_changed": "2026-10-02 12:48:02Z",
+      "minutes_in_status": 2059,
+      "protocol": "MakerDAO/Sky DSR (sDAI)",
+      "verdict": "needs_human",
+      "findings": 5
+    },
+    {
+      "id": "sparklend-dai",
+      "chain": "ethereum",
+      "status": "rejected",
+      "round": 1,
+      "status_changed": "2026-10-02 12:42:15Z",
+      "minutes_in_status": 2064,
+      "protocol": "SparkLend",
+      "verdict": "needs_human",
+      "findings": 4
+    },
+    {
+      "id": "sparklend-usds",
+      "chain": "ethereum",
+      "status": "done",
+      "round": 1,
+      "status_changed": "2026-09-29 13:48:09Z",
+      "minutes_in_status": 6318,
+      "protocol": "SparkLend",
+      "verdict": "pass",
+      "findings": 2
+    },
+    {
+      "id": "sparklend-weth",
+      "chain": "ethereum",
+      "status": "rejected",
+      "round": 1,
+      "status_changed": "2026-10-02 04:00:22Z",
+      "minutes_in_status": 2586,
+      "protocol": "SparkLend",
+      "verdict": "pass",
+      "findings": 5
+    },
+    {
+      "id": "stub-compound-v3-usdc",
+      "chain": "ethereum",
+      "status": "done",
+      "round": 1,
+      "status_changed": "2026-09-27 12:03:53Z",
+      "minutes_in_status": 9303,
+      "protocol": "Compound V3",
+      "verdict": "pass",
+      "findings": 5
+    },
+    {
+      "id": "yearn-v3-usdc-1",
+      "chain": "ethereum",
+      "status": "awaiting_review",
+      "round": 2,
+      "status_changed": "2026-10-03 08:13:55Z",
+      "minutes_in_status": 893,
+      "protocol": "Yearn V3",
+      "verdict": "pass",
+      "findings": 3,
+      "open_questions": null
+    }
+  ],
+  "awaiting": [
+    {
+      "id": "curve-lending-crvusd-sreusd",
+      "chain": "ethereum",
+      "status": "awaiting_review",
+      "round": 1,
+      "status_changed": "2026-10-03 06:36:09Z",
+      "minutes_in_status": 990,
+      "protocol": "Curve Lending (LlamaLend)",
+      "verdict": "pass",
+      "findings": 4,
+      "open_questions": null
+    },
+    {
+      "id": "yearn-v3-usdc-1",
+      "chain": "ethereum",
+      "status": "awaiting_review",
+      "round": 2,
+      "status_changed": "2026-10-03 08:13:55Z",
+      "minutes_in_status": 893,
+      "protocol": "Yearn V3",
+      "verdict": "pass",
+      "findings": 3,
+      "open_questions": null
+    }
+  ],
+  "runs": [
+    {
+      "stage": "critique",
+      "candidate": "yearn-v3-usdc-1",
+      "status": "ok",
+      "turns": 27,
+      "cost_estimate_usd": 1.23,
+      "started_at": "2026-10-03T08:09:51+00:00",
+      "ended_at": "2026-10-03T08:13:53+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "analyze",
+      "candidate": "yearn-v3-usdc-1",
+      "status": "failed",
+      "turns": 61,
+      "cost_estimate_usd": 3.97,
+      "started_at": "2026-10-03T07:54:26+00:00",
+      "ended_at": "2026-10-03T08:09:51+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "critique",
+      "candidate": "yearn-v3-usdc-1",
+      "status": "ok",
+      "turns": 25,
+      "cost_estimate_usd": 0.96,
+      "started_at": "2026-10-03T07:51:02+00:00",
+      "ended_at": "2026-10-03T07:54:26+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "analyze",
+      "candidate": "yearn-v3-usdc-1",
+      "status": "ok",
+      "turns": 51,
+      "cost_estimate_usd": 2.63,
+      "started_at": "2026-10-03T07:10:58+00:00",
+      "ended_at": "2026-10-03T07:51:02+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "critique",
+      "candidate": "frax-sfrxusd",
+      "status": "failed",
+      "turns": 31,
+      "cost_estimate_usd": 1.15,
+      "started_at": "2026-10-03T06:57:22+00:00",
+      "ended_at": "2026-10-03T07:10:58+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "analyze",
+      "candidate": "frax-sfrxusd",
+      "status": "ok",
+      "turns": 48,
+      "cost_estimate_usd": 2.85,
+      "started_at": "2026-10-03T06:36:10+00:00",
+      "ended_at": "2026-10-03T06:57:22+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "critique",
+      "candidate": "curve-lending-crvusd-sreusd",
+      "status": "ok",
+      "turns": 25,
+      "cost_estimate_usd": 0.97,
+      "started_at": "2026-10-03T06:31:41+00:00",
+      "ended_at": "2026-10-03T06:36:08+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "analyze",
+      "candidate": "curve-lending-crvusd-sreusd",
+      "status": "ok",
+      "turns": 19,
+      "cost_estimate_usd": 0.88,
+      "started_at": "2026-10-03T06:28:50+00:00",
+      "ended_at": "2026-10-03T06:31:41+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "analyze",
+      "candidate": "curve-lending-crvusd-sreusd",
+      "status": "interrupted",
+      "turns": null,
+      "cost_estimate_usd": null,
+      "started_at": "2026-10-03T06:13:16+00:00",
+      "ended_at": "2026-10-03T06:28:50+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "implement",
+      "candidate": "fluid-fusdc",
+      "status": "ok",
+      "turns": 78,
+      "cost_estimate_usd": 2.49,
+      "started_at": "2026-10-03T06:03:16+00:00",
+      "ended_at": "2026-10-03T06:13:16+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "research",
+      "candidate": "—",
+      "status": "ok",
+      "turns": 53,
+      "cost_estimate_usd": 1.97,
+      "started_at": "2026-10-03T05:57:29+00:00",
+      "ended_at": "2026-10-03T06:07:42+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "critique",
+      "candidate": "fluid-fusdc",
+      "status": "ok",
+      "turns": 31,
+      "cost_estimate_usd": 1.52,
+      "started_at": "2026-10-03T05:54:48+00:00",
+      "ended_at": "2026-10-03T06:00:12+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "analyze",
+      "candidate": "fluid-fusdc",
+      "status": "failed",
+      "turns": 61,
+      "cost_estimate_usd": 3.63,
+      "started_at": "2026-10-03T05:37:19+00:00",
+      "ended_at": "2026-10-03T05:54:48+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "research",
+      "candidate": "—",
+      "status": "ok",
+      "turns": 58,
+      "cost_estimate_usd": 1.92,
+      "started_at": "2026-10-03T05:30:09+00:00",
+      "ended_at": "2026-10-03T05:39:03+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "research",
+      "candidate": "—",
+      "status": "ok",
+      "turns": 52,
+      "cost_estimate_usd": 1.65,
+      "started_at": "2026-10-03T04:30:29+00:00",
+      "ended_at": "2026-10-03T04:37:10+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "implement",
+      "candidate": "maple-syrup-usdc",
+      "status": "ok",
+      "turns": 102,
+      "cost_estimate_usd": 4.3,
+      "started_at": "2026-10-02T15:04:39+00:00",
+      "ended_at": "2026-10-02T15:24:49+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "critique",
+      "candidate": "maple-syrup-usdc",
+      "status": "ok",
+      "turns": 28,
+      "cost_estimate_usd": 1.28,
+      "started_at": "2026-10-02T14:48:00+00:00",
+      "ended_at": "2026-10-02T14:51:36+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "analyze",
+      "candidate": "maple-syrup-usdc",
+      "status": "ok",
+      "turns": 43,
+      "cost_estimate_usd": 2.61,
+      "started_at": "2026-10-02T14:34:49+00:00",
+      "ended_at": "2026-10-02T14:48:00+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "implement",
+      "candidate": "maple-syrup-usdc",
+      "status": "interrupted",
+      "turns": null,
+      "cost_estimate_usd": null,
+      "started_at": "2026-10-02T14:27:00+00:00",
+      "ended_at": "2026-10-02T14:34:49+00:00",
+      "minutes": null
+    },
+    {
+      "stage": "critique",
+      "candidate": "maple-syrup-usdc",
+      "status": "ok",
+      "turns": 11,
+      "cost_estimate_usd": 1.51,
+      "started_at": "2026-10-02T14:23:27+00:00",
+      "ended_at": "2026-10-02T14:24:58+00:00",
+      "minutes": null
+    }
+  ],
+  "totals": {
+    "runs_today": 15,
+    "max_runs_per_day": 100,
+    "cost_estimate_today_usd": 27.82,
+    "stage_ceiling_usd": 10.0,
+    "consecutive_failures": 0,
+    "queue_size": 24
+  },
+  "stopped": null,
+  "doctor": {
+    "checked_at": "2026-10-02T07:27:34Z",
+    "ok": true,
+    "checks": [
+      {
+        "name": "claude_token",
+        "ok": true
+      },
+      {
+        "name": "rpc_current",
+        "ok": true
+      },
+      {
+        "name": "rpc_archive",
+        "ok": true
+      },
+      {
+        "name": "git_push_airflow",
+        "ok": true
+      },
+      {
+        "name": "git_push_dashboard",
+        "ok": true
+      },
+      {
+        "name": "outbox",
+        "ok": true
+      },
+      {
+        "name": "defidash_api",
+        "ok": true
+      },
+      {
+        "name": "airflow_venv",
+        "ok": true
+      },
+      {
+        "name": "github_app",
+        "ok": true
+      },
+      {
+        "name": "analytics_db",
+        "ok": true
+      },
+      {
+        "name": "tg_bot",
+        "ok": true
+      },
+      {
+        "name": "profile_rules",
+        "ok": true
+      }
+    ]
+  },
+  "links": {
+    "dashboard": "https://detracker.github.io/ai-sandbox-dashboard/"
+  },
+  "notes": {
+    "cost_is_estimate": "Стоимость — оценка SDK по API-прайсу. Аккаунт подписочный, по этой сумме ничего не списывается; это мера расхода и страховочный потолок стадии.",
+    "snapshot_is_periodic": "Снимок обновляется раз в 2 минуты; raw кэшируется до ~5 минут."
+  }
+}

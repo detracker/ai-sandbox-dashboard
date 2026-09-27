@@ -77,7 +77,7 @@ code { font-family: var(--mono); font-size: .92em; }
    статус: колонку с идентификатором разрешаем переносить, остальное держим в одну строку. */
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 @media (max-width: 560px) {
-  td.id, td:first-child { white-space: normal; word-break: break-word; max-width: 13ch; }
+  td.id { white-space: normal; word-break: break-word; max-width: 22ch; }
   table { font-size: 12px; }
   th, td { padding-right: 8px; }
 }

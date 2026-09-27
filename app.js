@@ -115,15 +115,17 @@ function renderQueue(rows) {
     $('queue').innerHTML = '<p class="muted">очередь пуста</p>';
     return;
   }
+  // Порядок колонок = порядок важности: на узком экране за край уезжает то, без чего можно
+  // обойтись (сеть, круг), а не статус и время ожидания, ради которых в таблицу и смотрят.
   $('queue').innerHTML = table(
-    ['кандидат', 'протокол', 'сеть', 'статус', 'круг', 'в статусе'],
+    ['кандидат', 'статус', 'в статусе', 'протокол', 'круг', 'сеть'],
     rows.map((row) => [
       cell(row.id, 'id'),
-      cell(row.protocol || '—'),
-      cell(row.chain || '—'),
       `<td><span class="badge ${esc(row.status)}">${esc(row.status)}</span></td>`,
-      cell(row.round ?? '—', 'num'),
       cell(humanAge(row.minutes_in_status)),
+      cell(row.protocol || '—'),
+      cell(row.round ?? '—', 'num'),
+      cell(row.chain || '—'),
     ]),
   );
 }
@@ -166,14 +168,14 @@ function renderRuns(rows) {
     return;
   }
   $('runs').innerHTML = table(
-    ['начало (UTC)', 'стадия', 'кандидат', 'итог', 'ходов', 'оценка, $'],
+    ['начало (UTC)', 'стадия', 'итог', 'ходов', 'оценка, $', 'кандидат'],
     rows.map((row) => [
       cell(shortTime(row.started_at), 'id'),
       cell(row.stage),
-      cell(row.candidate || '—'),
       `<td><span class="badge ${esc(row.status)}">${esc(row.status)}</span></td>`,
       cell(row.turns ?? '—', 'num'),
       cell(row.cost_estimate_usd ? row.cost_estimate_usd.toFixed(2) : '—', 'num'),
+      cell(row.candidate || '—'),
     ]),
   );
 }

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,55 +10,90 @@
 </head>
 <body>
 <header>
-  <h1>AI-Sandbox</h1>
-  <div class="head-right">
-    <span id="age" class="age" title="возраст снимка">—</span>
-    <button id="refresh" type="button" title="обновить сейчас">↻</button>
+  <div class="head-top">
+    <h1>AI-Sandbox</h1>
+    <div class="head-right">
+      <span id="age" class="age" title="snapshot age">—</span>
+      <button id="refresh" type="button" title="refresh now" aria-label="refresh">↻</button>
+    </div>
   </div>
+  <!-- One health line: is work running, is a human needed, are the accesses alive. -->
+  <div id="health" class="health"></div>
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="instruments">Instruments <span id="tab-instruments" class="tab-count"></span></button>
+    <button role="tab" data-tab="pipeline">Pipeline <span id="tab-pipeline" class="tab-count"></span></button>
+    <button role="tab" data-tab="log">Log</button>
+  </nav>
 </header>
 
 <main>
-  <!-- Первым блоком то, ради чего человек открывает страницу: от него чего-то ждут. -->
-  <section id="awaiting-box" class="card accent hidden">
-    <h2>Ждёт решения</h2>
-    <div id="awaiting"></div>
-    <p class="hint">Решение принимается командой <code>sandboxctl approve &lt;id&gt;</code> или
-      кнопкой в Telegram. Дашборд только показывает.</p>
-  </section>
-
-  <section id="now-box" class="card">
-    <h2>Сейчас</h2>
-    <div id="now" class="now-empty">ничего не выполняется</div>
-  </section>
-
-  <section class="card">
-    <h2>Очередь <span id="queue-count" class="muted"></span></h2>
-    <div id="queue" class="table-wrap"></div>
-  </section>
-
-  <section class="grid2">
-    <div class="card">
-      <h2>Расход за сутки</h2>
-      <div id="totals"></div>
-      <p class="hint" id="cost-note"></p>
+  <!-- Instruments: the outcome — what is being collected into the database and how it is going. -->
+  <section id="panel-instruments" class="panel" role="tabpanel">
+    <div id="status-chips" class="filter-chips"></div>
+    <div class="controls">
+      <div id="source-switch" class="segmented" role="group" aria-label="source"></div>
+      <select id="protocol-filter" aria-label="protocol"></select>
+      <input id="search" type="search" placeholder="search: protocol, pool, address" aria-label="search">
     </div>
-    <div class="card">
-      <h2>Доступы</h2>
-      <div id="doctor" class="chips muted">нет данных</div>
-      <p class="hint">Результат последнего прогона <code>sandboxctl doctor</code>.
-        Причины отказов остаются на боксе: страница публичная.</p>
-    </div>
+    <p id="instruments-summary" class="hint"></p>
+    <div id="instruments" class="cards"></div>
   </section>
 
-  <section class="card">
-    <h2>Последние прогоны</h2>
-    <div id="runs" class="table-wrap"></div>
+  <!-- Pipeline: a candidate's path from discovery to collection. -->
+  <section id="panel-pipeline" class="panel hidden" role="tabpanel">
+    <div class="card">
+      <h2>Funnel</h2>
+      <div id="funnel" class="funnel"></div>
+    </div>
+    <section id="awaiting-box" class="card accent hidden">
+      <h2>Awaiting decision</h2>
+      <div id="awaiting"></div>
+      <p class="hint">Decisions are made with the Telegram buttons or <code>sandboxctl</code>. This page is read-only.</p>
+    </section>
+    <section class="card">
+      <h2>Now</h2>
+      <div id="now" class="now-empty">nothing is running</div>
+    </section>
+    <section class="card">
+      <h2>In progress <span id="active-count" class="muted"></span></h2>
+      <div id="active" class="table-wrap"></div>
+    </section>
+    <section class="card">
+      <h2>History</h2>
+      <div id="history-chips" class="filter-chips"></div>
+      <div id="history" class="table-wrap"></div>
+    </section>
+  </section>
+
+  <!-- Log: runs, spend, accesses. -->
+  <section id="panel-log" class="panel hidden" role="tabpanel">
+    <section class="grid2">
+      <div class="card">
+        <h2>Last 24 hours</h2>
+        <div id="totals"></div>
+        <p class="hint" id="cost-note"></p>
+      </div>
+      <div class="card">
+        <h2>Accesses</h2>
+        <div id="doctor" class="chips muted">no data</div>
+        <p class="hint">Result of the last <code>sandboxctl doctor</code>. Failure reasons stay on the box:
+          this page is public.</p>
+      </div>
+    </section>
+    <section class="card">
+      <h2>Recent runs</h2>
+      <div class="controls">
+        <select id="stage-filter" aria-label="stage"></select>
+        <select id="result-filter" aria-label="result"></select>
+      </div>
+      <div id="runs" class="table-wrap"></div>
+    </section>
   </section>
 </main>
 
 <footer>
   <span id="source" class="muted"></span>
-  <span class="muted">read-only · данные обновляются раз в 2 минуты, кэш raw до ~5 минут</span>
+  <span class="muted">read-only · snapshot every 2 minutes, raw cache up to ~5 minutes · instrument registry every 10 minutes</span>
 </footer>
 
 <script src="app.js"></script>

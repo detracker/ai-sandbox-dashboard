@@ -92,7 +92,7 @@ function render(data) {
 function renderAge(generatedAt) {
   const minutes = minutesSince(generatedAt);
   const node = $('age');
-  node.textContent = `snapshot ${humanAge(minutes)} ago`;
+  node.textContent = minutes !== null && minutes < 1 ? 'snapshot just now' : `snapshot ${humanAge(minutes)} ago`;
   // Over 15 minutes means the timer on the box did not fire, and that must be visible at once.
   node.classList.toggle('stale', minutes !== null && minutes > 15);
 }
@@ -226,7 +226,7 @@ function instrumentCard(item) {
       : '';
   const freshness =
     item.status === 'backfilling'
-      ? `writing, last ${humanAge(minutesSince(item.last_write))} ago`
+      ? `writing, last ${minutesSince(item.last_write) < 1 ? 'just now' : `${humanAge(minutesSince(item.last_write))} ago`}`
       : item.last_data
         ? `data ${humanAge(minutesSince(item.last_data))} old`
         : 'no data';

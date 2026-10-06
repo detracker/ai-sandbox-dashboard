@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>AI-Sandbox</title>
-<link rel="stylesheet" href="style.css?v=74754b3">
+<link rel="stylesheet" href="style.css?v=h291047">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>◵</text></svg>">
 </head>
 <body>
@@ -22,6 +22,7 @@
   <nav class="tabs" role="tablist">
     <button role="tab" data-tab="instruments">Instruments <span id="tab-instruments" class="tab-count"></span></button>
     <button role="tab" data-tab="pipeline">Pipeline <span id="tab-pipeline" class="tab-count"></span></button>
+    <button role="tab" data-tab="health">Health <span id="tab-health" class="tab-count"></span></button>
     <button role="tab" data-tab="log">Log</button>
   </nav>
 </header>
@@ -65,20 +66,21 @@
     </section>
   </section>
 
-  <!-- Log: runs, spend, accesses. -->
+  <!-- Health: every external dependency of the sandbox, to spot degradation early. -->
+  <section id="panel-health" class="panel hidden" role="tabpanel">
+    <p id="health-summary" class="hint"></p>
+    <div id="health-groups"></div>
+    <p class="hint">Checks run on the box every 15 minutes. The bar shows the last 12 hours, oldest on the
+      left. A dependency that is down twice in a row is also reported to Telegram. Failure reasons stay
+      on the box: this page is public.</p>
+  </section>
+
+  <!-- Log: runs and spend. -->
   <section id="panel-log" class="panel hidden" role="tabpanel">
-    <section class="grid2">
-      <div class="card">
-        <h2>Last 24 hours</h2>
-        <div id="totals"></div>
-        <p class="hint" id="cost-note"></p>
-      </div>
-      <div class="card">
-        <h2>Accesses</h2>
-        <div id="doctor" class="chips muted">no data</div>
-        <p class="hint">Result of the last <code>sandboxctl doctor</code>. Failure reasons stay on the box:
-          this page is public.</p>
-      </div>
+    <section class="card">
+      <h2>Last 24 hours</h2>
+      <div id="totals"></div>
+      <p class="hint" id="cost-note"></p>
     </section>
     <section class="card">
       <h2>Recent runs</h2>
@@ -96,6 +98,6 @@
   <span class="muted">read-only · snapshot every 2 minutes, raw cache up to ~5 minutes · instrument registry every 10 minutes</span>
 </footer>
 
-<script src="app.js?v=74754b3"></script>
+<script src="app.js?v=h291047"></script>
 </body>
 </html>

@@ -25,7 +25,7 @@ the repository into a dump.
 
 ## What the page shows
 
-Three tabs; the tab and the filters live in `#hash`, so a view can be shared as a link:
+Four tabs; the tab and the filters live in `#hash`, so a view can be shared as a link:
 
 - **Instruments** (default) — everything collected into the analytics database: added by the
   agents and the legacy collection. The status is derived from data freshness (collectors run
@@ -36,7 +36,13 @@ Three tabs; the tab and the filters live in `#hash`, so a view can be shared as 
   box every 10 minutes.
 - **Pipeline** — the funnel (discovered → screened out → in progress → awaiting decision →
   implemented → collecting), what awaits a decision, what is running now, history with a filter.
-- **Log** — runs filtered by stage and result, spend over 24 hours, accesses.
+- **Health** — every external dependency of the sandbox, grouped (Blockchain, Data, Agents,
+  Delivery, Box): state (ok / degraded / down), a summary with numbers (head block age,
+  latencies, last write into the database, stalled instruments, last publish, free disk…), what
+  the dependency is for, and a 12-hour history bar. Checks run on the box every 15 minutes
+  (`sandboxctl health --save`); a dependency down twice in a row is also reported to Telegram.
+  The header pill shows the worst state.
+- **Log** — runs filtered by stage and result, spend over 24 hours.
 
 ## The repository is public — what follows
 

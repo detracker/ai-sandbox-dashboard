@@ -38,7 +38,7 @@ function readHash() {
   for (const key of Object.keys(state)) {
     if (params.has(key)) state[key] = params.get(key);
   }
-  if (!['instruments', 'pipeline', 'log'].includes(state.tab)) state.tab = 'instruments';
+  if (!['instruments', 'pipeline', 'health', 'log'].includes(state.tab)) state.tab = 'instruments';
 }
 
 function writeHash() {
@@ -84,6 +84,7 @@ function render(data) {
   renderTabs(data);
   renderInstruments(data);
   renderPipeline(data);
+  renderHealthTab(data);
   renderLog(data);
 }
 
@@ -110,13 +111,17 @@ function renderHealth(data) {
   }
   const waiting = (data.awaiting || []).length;
   if (waiting) parts.push(`<a class="pill accent" href="#tab=pipeline">awaiting decision: ${waiting}</a>`);
-  const checks = (data.doctor && data.doctor.checks) || [];
-  const failed = checks.filter((c) => !c.ok);
+  // One pill for all dependencies: the worst state wins.
+  const checks = (data.health && data.health.checks) || [];
   if (checks.length) {
+    const down = checks.filter((c) => c.state === 'down').length;
+    const degraded = checks.filter((c) => c.state === 'degraded').length;
     parts.push(
-      failed.length
-        ? `<a class="pill fail" href="#tab=log">accesses: ${failed.length} ✗</a>`
-        : '<span class="pill ok">accesses ✓</span>',
+      down
+        ? `<a class="pill fail" href="#tab=health">${down} down${degraded ? `, ${degraded} degraded` : ''}</a>`
+        : degraded
+          ? `<a class="pill accent" href="#tab=health">${degraded} degraded</a>`
+          : '<a class="pill ok" href="#tab=health">all systems ok</a>',
     );
   }
   const problems = (data.instruments || []).filter((i) => i.status === 'stalled' || i.status === 'lagging');
@@ -132,7 +137,7 @@ function renderTabs(data) {
     button.classList.toggle('active', active);
     button.setAttribute('aria-selected', active);
   }
-  for (const tab of ['instruments', 'pipeline', 'log']) {
+  for (const tab of ['instruments', 'pipeline', 'health', 'log']) {
     $(`panel-${tab}`).classList.toggle('hidden', tab !== state.tab);
   }
   const items = data.instruments || [];
@@ -349,6 +354,57 @@ function renderNow(now) {
     <span class="muted">for ${humanAge(now.minutes)}</span>`;
 }
 
+/* --- health -------------------------------------------------------------------------- */
+
+const HEALTH = {
+  down: { sign: '🔴', label: 'down', order: 0 },
+  degraded: { sign: '🟠', label: 'degraded', order: 1 },
+  ok: { sign: '🟢', label: 'ok', order: 2 },
+};
+
+function renderHealthTab(data) {
+  const health = data.health;
+  const checks = (health && health.checks) || [];
+  const down = checks.filter((c) => c.state === 'down').length;
+  const degraded = checks.filter((c) => c.state === 'degraded').length;
+  $('tab-health').textContent = down ? `🔴${down}` : degraded ? `🟠${degraded}` : '';
+  if (!checks.length) {
+    $('health-summary').textContent = '';
+    $('health-groups').innerHTML = '<p class="muted">no health data yet — checks run every 15 minutes</p>';
+    return;
+  }
+  const age = minutesSince(health.checked_at);
+  $('health-summary').textContent =
+    `${checks.length} dependencies · ${down} down · ${degraded} degraded · checked ${age !== null && age < 1 ? 'just now' : `${humanAge(age)} ago`}`;
+  // Groups keep the box's order; inside a group problems go first.
+  const groups = [...new Set(checks.map((c) => c.group))];
+  $('health-groups').innerHTML = groups
+    .map((group) => {
+      const items = checks
+        .filter((c) => c.group === group)
+        .sort((a, b) => (HEALTH[a.state]?.order ?? 9) - (HEALTH[b.state]?.order ?? 9));
+      return `<section class="card"><h2>${esc(group)}</h2><div class="deps">${items.map(dependencyRow).join('')}</div></section>`;
+    })
+    .join('');
+}
+
+function dependencyRow(check) {
+  const s = HEALTH[check.state] || { sign: '?', label: check.state };
+  const history = (check.history || [])
+    .map((state) => `<span class="tick ${esc(state)}" title="${esc(state)}"></span>`)
+    .join('');
+  const incidents = (check.history || []).filter((state) => state !== 'ok').length;
+  return `<div class="dep ${esc(check.state)}">
+    <div class="dep-head">
+      <span class="dep-title">${esc(check.title)}</span>
+      <span class="status ${esc(check.state === 'ok' ? 'collecting' : check.state === 'down' ? 'stalled' : 'lagging')}">${s.sign} ${esc(s.label)}</span>
+    </div>
+    <div class="dep-summary mono">${esc(check.summary)}</div>
+    <div class="dep-purpose muted">${esc(check.purpose)}</div>
+    <div class="ticks" title="last 12 hours: ${incidents} of ${(check.history || []).length} checks not ok">${history}</div>
+  </div>`;
+}
+
 /* --- log ----------------------------------------------------------------------------- */
 
 function renderLog(data) {
@@ -364,16 +420,6 @@ function renderLog(data) {
     items.map(([label, value]) => `<div><div class="metric-value">${esc(value)}</div><div class="metric-label">${esc(label)}</div></div>`).join('') +
     '</div>';
   $('cost-note').textContent = (data.notes || {}).cost_is_estimate || '';
-
-  const doctor = data.doctor;
-  const node = $('doctor');
-  if (!doctor || !doctor.checks) {
-    node.className = 'chips muted';
-    node.textContent = 'no data — doctor has not run yet';
-  } else {
-    node.className = 'chips';
-    node.innerHTML = doctor.checks.map((c) => `<span class="chip ${c.ok ? 'ok' : 'fail'}">${esc(c.name)}</span>`).join('');
-  }
 
   const runs = data.runs || [];
   const stages = [...new Set(runs.map((r) => r.stage))].sort();

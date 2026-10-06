@@ -57,3 +57,7 @@ python3 -m http.server 8000   # then http://localhost:8000
 ```
 
 No build step and no dependencies: `index.html`, `app.js`, `style.css`.
+
+**When changing `app.js` or `style.css`, bump `?v=` on their links in `index.html`.** Pages
+serves files with `max-age=600`; without a new version a browser may combine the new
+`index.html` with a cached old script, and the page breaks ("snapshot unavailable").

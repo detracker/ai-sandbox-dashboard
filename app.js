@@ -11,9 +11,12 @@
  */
 const SNAPSHOT_DEFAULT = 'https://raw.githubusercontent.com/detracker/ai-sandbox-dashboard/data/snapshot.json';
 // `?snapshot=local.json` — preview the page on a local snapshot before publishing. Relative
-// paths only: a link must not be able to point the public page at someone else's data.
+// paths only: a link must not be able to point the public page at someone else's data. The
+// path starts with a name, never with `/`: `//evil.example/x.json` is a protocol-relative URL
+// to another host (audit 2026-10-07, A-045).
 const SNAPSHOT_PARAM = new URLSearchParams(location.search).get('snapshot');
-const SNAPSHOT = SNAPSHOT_PARAM && /^[\w./-]+\.json$/.test(SNAPSHOT_PARAM) && !SNAPSHOT_PARAM.includes('..') ? SNAPSHOT_PARAM : SNAPSHOT_DEFAULT;
+const SNAPSHOT_LOCAL = /^[\w-][\w.-]*(?:\/[\w-][\w.-]*)*\.json$/;
+const SNAPSHOT = SNAPSHOT_PARAM && SNAPSHOT_LOCAL.test(SNAPSHOT_PARAM) && !SNAPSHOT_PARAM.includes('..') ? SNAPSHOT_PARAM : SNAPSHOT_DEFAULT;
 const SUPPORTED_SCHEMA = 1;
 const REFRESH_MS = 60_000;
 

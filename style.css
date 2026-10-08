@@ -204,3 +204,10 @@ footer {
 .tick { flex: 1 1 0; max-width: 10px; height: 10px; border-radius: 2px; background: var(--ok); opacity: .75; }
 .tick.degraded { background: var(--accent); opacity: 1; }
 .tick.down { background: var(--fail); opacity: 1; }
+
+/* Source of truth #2: how to check the instrument against the project's own site. */
+.site-note { margin-top: 8px; font-size: 12px; }
+.site-note summary { cursor: pointer; color: var(--muted, #888); }
+.site-note ul { margin: 6px 0; padding-left: 18px; }
+.site-note p { margin: 6px 0; }
+

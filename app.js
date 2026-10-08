@@ -239,7 +239,22 @@ function instrumentCard(item) {
       : item.last_data
         ? `data ${humanAge(minutesSince(item.last_data))} old`
         : 'no data';
+  // Source of truth #2 after golden: the instrument's own page on the project site, what to
+  // compare there, and why our numbers may legitimately differ (accounting policy).
+  const compare = Object.entries(item.site_compare || {})
+    .map(([metric, field]) => `<li><span class="mono">${esc(metric)}</span> ↔ ${esc(field)}</li>`)
+    .join('');
+  const siteNote =
+    item.site_url && (compare || item.site_differences || item.site_checked || item.site_issue)
+      ? `<details class="site-note"><summary>${item.site_differences ? 'why numbers may differ from the site' : 'how to check against the site'}</summary>
+          ${compare ? `<ul>${compare}</ul>` : ''}
+          ${item.site_differences ? `<p>${esc(item.site_differences)}</p>` : ''}
+          ${item.site_checked ? `<p class="muted">checked: ${esc(item.site_checked)}</p>` : ''}
+          ${item.site_issue ? `<p><a href="${esc(item.site_issue)}" target="_blank" rel="noopener">methodology discussion ↗</a></p>` : ''}
+        </details>`
+      : '';
   const links = [
+    item.site_url && `<a href="${esc(item.site_url)}" target="_blank" rel="noopener noreferrer" title="this instrument on the project's own site — compare the numbers">check on project site ↗</a>`,
     item.how_url && `<a href="${esc(item.how_url)}" target="_blank" rel="noopener" title="collection spec or collector code (GitLab, team access)">how it's collected ↗</a>`,
     item.mr_url && `<a href="${esc(item.mr_url)}" target="_blank" rel="noopener">MR ↗</a>`,
     item.issue_url && `<a href="${esc(item.issue_url)}" target="_blank" rel="noopener">decisions ↗</a>`,
@@ -259,6 +274,7 @@ function instrumentCard(item) {
       .join('')}</div>
     <div class="inst-meta muted">${esc(freshness)} · series since ${esc(shortDate(item.first_data))} · <span class="mono">${esc(item.dag || '—')}</span></div>
     ${links.length ? `<div class="inst-links">${links.join('')}</div>` : ''}
+    ${siteNote}
   </article>`;
 }
 

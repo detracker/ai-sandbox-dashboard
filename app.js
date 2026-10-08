@@ -23,8 +23,9 @@ const STATUS = {
   stalled: { sign: '🔴', label: 'stalled', one: 'stalled', order: 0 },
   lagging: { sign: '🟠', label: 'lagging', one: 'lagging', order: 1 },
   backfilling: { sign: '🔵', label: 'backfilling', one: 'backfilling history', order: 2 },
-  collecting: { sign: '🟢', label: 'collecting', one: 'collecting', order: 3 },
-  disabled: { sign: '⚪', label: 'disabled', one: 'disabled', order: 4 },
+  pending: { sign: '⏳', label: 'pending', one: 'awaiting first collector run', order: 3 },
+  collecting: { sign: '🟢', label: 'collecting', one: 'collecting', order: 4 },
+  disabled: { sign: '⚪', label: 'disabled', one: 'disabled', order: 5 },
 };
 const ACTIVE = ['proposed', 'analyzing', 'spec_ready', 'critiquing', 'needs_rework', 'approved', 'implementing', 'blocked'];
 

@@ -154,6 +154,7 @@ td.num { text-align: right; padding-right: 14px; }
 .status.stalled { color: var(--fail); }
 .status.lagging { color: var(--accent); }
 .status.backfilling { color: var(--run); }
+.status.pending { color: var(--muted); }
 .status.collecting { color: var(--ok); }
 .status.disabled { color: var(--muted); }
 .inst-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }

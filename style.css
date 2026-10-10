@@ -146,6 +146,9 @@ td.num { text-align: right; padding-right: 14px; }
 .inst.lagging { border-left-color: var(--accent); }
 .inst.stalled { border-left-color: var(--fail); }
 .inst.disabled { opacity: .65; }
+.inst.suspicious { outline: 1px dashed var(--accent); outline-offset: -1px; }
+.odd { font-size: 12px; color: var(--accent); }
+.metric-value.out { color: var(--accent); }
 .inst-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
 .inst-protocol { font-size: 12px; color: var(--muted); }
 .inst-name { font: 600 15px var(--mono); word-break: break-word; }

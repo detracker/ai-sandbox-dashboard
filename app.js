@@ -30,6 +30,18 @@ const STATUS = {
   collecting: { sign: '🟢', label: 'collecting', one: 'collecting', order: 4 },
   disabled: { sign: '⚪', label: 'disabled', one: 'disabled', order: 5 },
 };
+// Latest values outside the plausible range (computed by the sandbox, `instruments.suspicious`):
+// TVL in (0, $1T], rates at most 30%. The number may be real, but more often it is a method
+// error or a degenerate pool (a tiny vault lent out at 100% shows a rate in the thousands).
+const SUSPICIOUS = {
+  tvl_nonpositive: { label: 'TVL ≤ 0', metric: 'deposits' },
+  tvl_too_large: { label: 'TVL above $1T', metric: 'deposits' },
+  native_rate_too_high: { label: 'native rate above 30%', metric: 'native rate' },
+  full_rate_too_high: { label: 'full rate above 30%', metric: 'full rate' },
+};
+const RANGE_HINT = 'outside the plausible range: TVL in (0, $1T], rates up to 30%';
+const oddCodes = (item) => (item.suspicious || []).filter((code) => SUSPICIOUS[code]);
+
 const ACTIVE = ['proposed', 'analyzing', 'spec_ready', 'critiquing', 'needs_rework', 'approved', 'implementing', 'blocked'];
 
 const state = { tab: 'instruments', status: 'all', source: 'agents', protocol: 'all', q: '', history: 'all', stage: 'all', result: 'all' };
@@ -187,19 +199,23 @@ function renderInstruments(data) {
   // Status chips are both counters and the filter; empty ones are not shown.
   const counts = {};
   for (const item of scoped) counts[item.status] = (counts[item.status] || 0) + 1;
-  const chips = [['all', `all · ${scoped.length}`, '']].concat(
-    Object.entries(STATUS)
-      .filter(([key]) => counts[key])
-      .sort((a, b) => a[1].order - b[1].order)
-      .map(([key, s]) => [key, `${s.sign} ${s.label} · ${counts[key]}`, key]),
-  );
+  // "suspicious" is a filter across statuses: values outside the plausible range.
+  counts.suspicious = scoped.filter((i) => oddCodes(i).length).length;
+  const chips = [['all', `all · ${scoped.length}`, '']]
+    .concat(counts.suspicious ? [['suspicious', `⚠ suspicious · ${counts.suspicious}`, 'suspicious']] : [])
+    .concat(
+      Object.entries(STATUS)
+        .filter(([key]) => counts[key])
+        .sort((a, b) => a[1].order - b[1].order)
+        .map(([key, s]) => [key, `${s.sign} ${s.label} · ${counts[key]}`, key]),
+    );
   if (state.status !== 'all' && !counts[state.status]) state.status = 'all';
   $('status-chips').innerHTML = chips
     .map(([key, label, cls]) => `<button type="button" data-status="${key}" class="fchip ${cls} ${state.status === key ? 'on' : ''}">${esc(label)}</button>`)
     .join('');
 
   const shown = scoped
-    .filter((i) => state.status === 'all' || i.status === state.status)
+    .filter((i) => state.status === 'all' || i.status === state.status || (state.status === 'suspicious' && oddCodes(i).length))
     .sort(
       (a, b) =>
         (STATUS[a.status]?.order ?? 9) - (STATUS[b.status]?.order ?? 9) ||
@@ -222,6 +238,8 @@ function matches(item) {
 function instrumentCard(item) {
   const s = STATUS[item.status] || { sign: '?', one: item.status };
   const m = item.metrics || {};
+  const odd = oddCodes(item);
+  const oddMetrics = new Set(odd.map((code) => SUSPICIOUS[code].metric));
   const asset = item.asset || '';
   const metrics = [
     ['deposits', m.deposited != null ? `${compact(m.deposited)} ${asset}` : '—'],
@@ -260,7 +278,10 @@ function instrumentCard(item) {
     item.issue_url && `<a href="${esc(item.issue_url)}" target="_blank" rel="noopener">decisions ↗</a>`,
     item.address && `<a href="https://etherscan.io/address/${esc(item.address)}" target="_blank" rel="noopener" class="mono">${esc(shortAddress(item.address))} ↗</a>`,
   ].filter(Boolean);
-  return `<article class="inst ${esc(item.status)}">
+  const oddNote = odd.length
+    ? `<div class="odd" title="${esc(RANGE_HINT)}">⚠ suspicious: ${odd.map((code) => esc(SUSPICIOUS[code].label)).join(' · ')}</div>`
+    : '';
+  return `<article class="inst ${esc(item.status)}${odd.length ? ' suspicious' : ''}">
     <div class="inst-head">
       <div>
         <div class="inst-protocol">${esc(item.protocol_name || item.protocol)}${item.source === 'agents' ? ' <span class="tag">agents</span>' : ''}</div>
@@ -268,9 +289,13 @@ function instrumentCard(item) {
       </div>
       <span class="status ${esc(item.status)}">${s.sign} ${esc(s.one)}</span>
     </div>
+    ${oddNote}
     ${progress}
     <div class="inst-metrics">${metrics
-      .map(([label, value]) => `<div><div class="metric-value small">${esc(value)}</div><div class="metric-label">${esc(label)}</div></div>`)
+      .map(
+        ([label, value]) =>
+          `<div><div class="metric-value small${oddMetrics.has(label) ? ' out' : ''}">${esc(value)}</div><div class="metric-label">${esc(label)}</div></div>`,
+      )
       .join('')}</div>
     <div class="inst-meta muted">${esc(freshness)} · series since ${esc(shortDate(item.first_data))} · <span class="mono">${esc(item.dag || '—')}</span></div>
     ${links.length ? `<div class="inst-links">${links.join('')}</div>` : ''}

@@ -30,7 +30,11 @@ Four tabs; the tab and the filters live in `#hash`, so a view can be shared as a
 - **Instruments** (default) — everything collected into the analytics database: added by the
   agents and the legacy collection. The status is derived from data freshness (collectors run
   every 8 h): 🟢 collecting, 🔵 backfilling history (with %), 🟠 lagging (> 10 h),
-  🔴 stalled (> 26 h or no data), ⚪ disabled. Filters: status (counter chips), source,
+  🔴 stalled (> 26 h or no data), ⚪ disabled. Across statuses, ⚠ suspicious marks a card whose
+  latest values fall outside the plausible range — TVL not in (0, $1T] or a rate above 30% —
+  with a dashed orange outline, the reason, and the offending number highlighted; the range
+  is computed by the sandbox (`instruments.suspicious`). Filters: status (counter chips,
+  including ⚠ suspicious), source,
   protocol, search. The "how it's collected" (spec or collector code), MR and decisions links
   point to private repositories and open for the team only. The registry is recomputed on the
   box every 10 minutes.

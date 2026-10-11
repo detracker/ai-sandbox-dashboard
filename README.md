@@ -46,7 +46,10 @@ Four tabs; the tab and the filters live in `#hash`, so a view can be shared as a
   the dependency is for, and a 12-hour history bar. Checks run on the box every 15 minutes
   (`sandboxctl health --save`); a dependency down twice in a row is also reported to Telegram.
   The header pill shows the worst state.
-- **Log** — runs filtered by stage and result, spend over 24 hours.
+- **Log** — runs filtered by agent, stage and result, with the agent that ran them and its
+  steps (tool names from a closed vocabulary, never arguments); operations — incident and
+  protocol-rollout steps with who did them (`devops`, `deployer`, `human`, `system`); spend over
+  24 hours.
 
 ## The repository is public — what follows
 

@@ -44,7 +44,7 @@ const oddCodes = (item) => (item.suspicious || []).filter((code) => SUSPICIOUS[c
 
 const ACTIVE = ['proposed', 'analyzing', 'spec_ready', 'critiquing', 'needs_rework', 'approved', 'implementing', 'blocked'];
 
-const state = { tab: 'instruments', status: 'all', source: 'agents', protocol: 'all', q: '', history: 'all', stage: 'all', result: 'all' };
+const state = { tab: 'instruments', status: 'all', source: 'agents', protocol: 'all', q: '', history: 'all', stage: 'all', result: 'all', agent: 'all' };
 let snapshot = null;
 
 /* --- state in #hash ------------------------------------------------------------------ */
@@ -59,7 +59,7 @@ function readHash() {
 
 function writeHash() {
   const params = new URLSearchParams();
-  const defaults = { tab: 'instruments', status: 'all', source: 'agents', protocol: 'all', q: '', history: 'all', stage: 'all', result: 'all' };
+  const defaults = { tab: 'instruments', status: 'all', source: 'agents', protocol: 'all', q: '', history: 'all', stage: 'all', result: 'all', agent: 'all' };
   for (const [key, value] of Object.entries(state)) {
     if (value !== defaults[key]) params.set(key, value);
   }
@@ -467,26 +467,58 @@ function renderLog(data) {
   $('cost-note').textContent = (data.notes || {}).cost_is_estimate || '';
 
   const runs = data.runs || [];
+  const ops = data.ops || [];
   const stages = [...new Set(runs.map((r) => r.stage))].sort();
   const results = [...new Set(runs.map((r) => r.status))].sort();
+  const agents = [...new Set([...runs.map((r) => r.agent), ...ops.map((o) => o.agent)].filter(Boolean))].sort();
   if (state.stage !== 'all' && !stages.includes(state.stage)) state.stage = 'all';
   if (state.result !== 'all' && !results.includes(state.result)) state.result = 'all';
+  if (state.agent !== 'all' && !agents.includes(state.agent)) state.agent = 'all';
+  $('agent-filter').innerHTML = `<option value="all">all agents</option>` + agents.map((s) => `<option${s === state.agent ? ' selected' : ''}>${esc(s)}</option>`).join('');
   $('stage-filter').innerHTML = `<option value="all">all stages</option>` + stages.map((s) => `<option${s === state.stage ? ' selected' : ''}>${esc(s)}</option>`).join('');
   $('result-filter').innerHTML = `<option value="all">any result</option>` + results.map((s) => `<option${s === state.result ? ' selected' : ''}>${esc(s)}</option>`).join('');
-  const shown = runs.filter((r) => (state.stage === 'all' || r.stage === state.stage) && (state.result === 'all' || r.status === state.result));
+  const byAgent = (r) => state.agent === 'all' || r.agent === state.agent;
+  const shown = runs.filter((r) => byAgent(r) && (state.stage === 'all' || r.stage === state.stage) && (state.result === 'all' || r.status === state.result));
   $('runs').innerHTML = shown.length
     ? table(
-        ['started (UTC)', 'stage', 'result', 'turns', 'estimate, $', 'candidate'],
+        ['started (UTC)', 'agent', 'stage', 'result', 'turns', 'estimate, $', 'candidate', 'steps'],
         shown.map((row) => [
           cell(shortTime(row.started_at), 'id'),
+          cell(row.agent || '—'),
           cell(row.stage),
           badge(row.status),
           cell(row.turns ?? '—', 'num'),
           cell(row.cost_estimate_usd ? row.cost_estimate_usd.toFixed(2) : '—', 'num'),
           cell(row.candidate || '—'),
+          `<td>${stepsCell(row.steps)}</td>`,
         ]),
       )
     : '<p class="muted">no runs match the filter</p>';
+
+  const shownOps = ops.filter(byAgent);
+  $('ops').innerHTML = shownOps.length
+    ? table(
+        ['when (UTC)', 'agent', 'action', 'target'],
+        shownOps.map((op) => [cell(shortTime(op.at), 'id'), cell(op.agent || '—'), cell(op.action || '—'), cell(op.target || '—')]),
+      )
+    : '<p class="muted">no operations match the filter</p>';
+}
+
+/* Steps of a run: consecutive repeats collapse into "read ×12"; the full list unfolds. Steps are
+   words from a closed vocabulary on the box (steps.py) — tool names, never their arguments. */
+function stepsCell(steps) {
+  if (!Array.isArray(steps) || !steps.length) return '<span class="muted">—</span>';
+  const groups = [];
+  for (const step of steps) {
+    const last = groups[groups.length - 1];
+    if (last && last.step === step) last.n += 1;
+    else groups.push({ step, n: 1 });
+  }
+  const line = groups.map((g) => (g.n > 1 ? `${g.step} ×${g.n}` : g.step));
+  const short = line.slice(0, 3).join(' · ') + (line.length > 3 ? ' · …' : '');
+  return `<details class="steps"><summary>${esc(steps.length)} · ${esc(short)}</summary><ol>${steps
+    .map((s) => `<li>${esc(s)}</li>`)
+    .join('')}</ol></details>`;
 }
 
 /* --- formatting ---------------------------------------------------------------------- */
@@ -571,6 +603,7 @@ document.addEventListener('click', (event) => {
 });
 $('protocol-filter').addEventListener('change', (e) => setState({ protocol: e.target.value, status: 'all' }));
 $('search').addEventListener('input', (e) => setState({ q: e.target.value.trim() }));
+$('agent-filter').addEventListener('change', (e) => setState({ agent: e.target.value }));
 $('stage-filter').addEventListener('change', (e) => setState({ stage: e.target.value }));
 $('result-filter').addEventListener('change', (e) => setState({ result: e.target.value }));
 window.addEventListener('hashchange', () => {

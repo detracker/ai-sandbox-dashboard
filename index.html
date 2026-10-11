@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>AI-Sandbox</title>
-<link rel="stylesheet" href="style.css?v=s101010">
+<link rel="stylesheet" href="style.css?v=s111011">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>◵</text></svg>">
 </head>
 <body>
@@ -85,10 +85,18 @@
     <section class="card">
       <h2>Recent runs</h2>
       <div class="controls">
+        <select id="agent-filter" aria-label="agent"></select>
         <select id="stage-filter" aria-label="stage"></select>
         <select id="result-filter" aria-label="result"></select>
       </div>
       <div id="runs" class="table-wrap"></div>
+      <p class="hint">Agent — who did it; steps — tools the agent used, without arguments.</p>
+    </section>
+    <section class="card">
+      <h2>Operations</h2>
+      <p class="hint">Incident and protocol-rollout steps: devops — the DevOps agent and its runbooks,
+        deployer — merges, human — button presses, system — health checks and timers.</p>
+      <div id="ops" class="table-wrap"></div>
     </section>
   </section>
 </main>
@@ -98,6 +106,6 @@
   <span class="muted">read-only · snapshot every 2 minutes, raw cache up to ~5 minutes · instrument registry every 10 minutes</span>
 </footer>
 
-<script src="app.js?v=s101010"></script>
+<script src="app.js?v=s111011"></script>
 </body>
 </html>

@@ -42,9 +42,24 @@ const SUSPICIOUS = {
 const RANGE_HINT = 'outside the plausible range: TVL in (0, $1T], rates up to 30%';
 const oddCodes = (item) => (item.suspicious || []).filter((code) => SUSPICIOUS[code]);
 
+// Networks from the sandbox chain registry (`orchestrator/chains.py`); the snapshot carries
+// `chain_id`, and an instrument without it is Ethereum — that is how it was before multichain.
+const CHAINS = {
+  1: { name: 'Ethereum', icon: 'img/chains/1.png', explorer: 'https://etherscan.io/address/' },
+  4663: { name: 'Robinhood Chain', icon: 'img/chains/4663.png', explorer: 'https://robinhoodchain.blockscout.com/address/' },
+};
+const chainOf = (item) => (item.chain_id === undefined ? 1 : item.chain_id);
+const chainName = (id) => CHAINS[id]?.name || (id ? `chain ${id}` : 'unknown network');
+function chainIcon(id) {
+  const name = chainName(id);
+  return CHAINS[id]
+    ? `<img class="chain-icon" src="${esc(CHAINS[id].icon)}" alt="${esc(name)}" title="${esc(name)}" width="16" height="16">`
+    : `<span class="chain-icon unknown" title="${esc(name)}">?</span>`;
+}
+
 const ACTIVE = ['proposed', 'analyzing', 'spec_ready', 'critiquing', 'needs_rework', 'approved', 'implementing', 'blocked'];
 
-const state = { tab: 'instruments', status: 'all', source: 'agents', protocol: 'all', q: '', history: 'all', stage: 'all', result: 'all', agent: 'all' };
+const state = { tab: 'instruments', status: 'all', source: 'agents', protocol: 'all', chain: 'all', q: '', history: 'all', stage: 'all', result: 'all', agent: 'all' };
 let snapshot = null;
 
 /* --- state in #hash ------------------------------------------------------------------ */
@@ -59,7 +74,7 @@ function readHash() {
 
 function writeHash() {
   const params = new URLSearchParams();
-  const defaults = { tab: 'instruments', status: 'all', source: 'agents', protocol: 'all', q: '', history: 'all', stage: 'all', result: 'all', agent: 'all' };
+  const defaults = { tab: 'instruments', status: 'all', source: 'agents', protocol: 'all', chain: 'all', q: '', history: 'all', stage: 'all', result: 'all', agent: 'all' };
   for (const [key, value] of Object.entries(state)) {
     if (value !== defaults[key]) params.set(key, value);
   }
@@ -194,7 +209,20 @@ function renderInstruments(data) {
     protocols.map(([slug, name]) => `<option value="${esc(slug)}"${slug === state.protocol ? ' selected' : ''}>${esc(name)}</option>`).join('');
   if ($('search').value !== state.q) $('search').value = state.q;
 
-  const scoped = bySource.filter((i) => state.protocol === 'all' || i.protocol === state.protocol).filter(matches);
+  // Networks present in the selected source; the filter is hidden while there is only one.
+  const chainIds = [...new Set(bySource.map(chainOf))].sort((a, b) => (a ?? Infinity) - (b ?? Infinity));
+  if (state.chain !== 'all' && !chainIds.some((id) => String(id) === state.chain)) state.chain = 'all';
+  $('chain-filter').hidden = chainIds.length < 2;
+  $('chain-filter').innerHTML =
+    `<option value="all">all networks</option>` +
+    chainIds
+      .map((id) => `<option value="${esc(String(id))}"${String(id) === state.chain ? ' selected' : ''}>${esc(chainName(id))} · ${bySource.filter((i) => chainOf(i) === id).length}</option>`)
+      .join('');
+
+  const scoped = bySource
+    .filter((i) => state.chain === 'all' || String(chainOf(i)) === state.chain)
+    .filter((i) => state.protocol === 'all' || i.protocol === state.protocol)
+    .filter(matches);
 
   // Status chips are both counters and the filter; empty ones are not shown.
   const counts = {};
@@ -276,7 +304,7 @@ function instrumentCard(item) {
     item.how_url && `<a href="${esc(item.how_url)}" target="_blank" rel="noopener" title="collection spec or collector code (GitLab, team access)">how it's collected ↗</a>`,
     item.mr_url && `<a href="${esc(item.mr_url)}" target="_blank" rel="noopener">MR ↗</a>`,
     item.issue_url && `<a href="${esc(item.issue_url)}" target="_blank" rel="noopener">decisions ↗</a>`,
-    item.address && `<a href="https://etherscan.io/address/${esc(item.address)}" target="_blank" rel="noopener" class="mono">${esc(shortAddress(item.address))} ↗</a>`,
+    item.address && CHAINS[chainOf(item)] && `<a href="${esc(CHAINS[chainOf(item)].explorer)}${esc(item.address)}" target="_blank" rel="noopener" class="mono">${esc(shortAddress(item.address))} ↗</a>`,
   ].filter(Boolean);
   const oddNote = odd.length
     ? `<div class="odd" title="${esc(RANGE_HINT)}">⚠ suspicious: ${odd.map((code) => esc(SUSPICIOUS[code].label)).join(' · ')}</div>`
@@ -284,7 +312,7 @@ function instrumentCard(item) {
   return `<article class="inst ${esc(item.status)}${odd.length ? ' suspicious' : ''}">
     <div class="inst-head">
       <div>
-        <div class="inst-protocol">${esc(item.protocol_name || item.protocol)}${item.source === 'agents' ? ' <span class="tag">agents</span>' : ''}</div>
+        <div class="inst-protocol">${chainIcon(chainOf(item))}${esc(item.protocol_name || item.protocol)}${item.source === 'agents' ? ' <span class="tag">agents</span>' : ''}</div>
         <div class="inst-name">${esc(item.element)}</div>
       </div>
       <span class="status ${esc(item.status)}">${s.sign} ${esc(s.one)}</span>
@@ -598,9 +626,10 @@ document.addEventListener('click', (event) => {
   if (!target) return;
   if (target.dataset.tab) setState({ tab: target.dataset.tab });
   else if (target.dataset.status) setState({ status: target.dataset.status });
-  else if (target.dataset.source) setState({ source: target.dataset.source, protocol: 'all', status: 'all' });
+  else if (target.dataset.source) setState({ source: target.dataset.source, chain: 'all', protocol: 'all', status: 'all' });
   else if (target.dataset.history) setState({ history: target.dataset.history });
 });
+$('chain-filter').addEventListener('change', (e) => setState({ chain: e.target.value, protocol: 'all', status: 'all' }));
 $('protocol-filter').addEventListener('change', (e) => setState({ protocol: e.target.value, status: 'all' }));
 $('search').addEventListener('input', (e) => setState({ q: e.target.value.trim() }));
 $('agent-filter').addEventListener('change', (e) => setState({ agent: e.target.value }));

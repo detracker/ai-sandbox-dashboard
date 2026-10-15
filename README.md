@@ -33,8 +33,9 @@ Four tabs; the tab and the filters live in `#hash`, so a view can be shared as a
   🔴 stalled (> 26 h or no data), ⚪ disabled. Across statuses, ⚠ suspicious marks a card whose
   latest values fall outside the plausible range — TVL not in (0, $1T] or a rate above 30% —
   with a dashed orange outline, the reason, and the offending number highlighted; the range
-  is computed by the sandbox (`instruments.suspicious`). Filters: status (counter chips,
-  including ⚠ suspicious), source,
+  is computed by the sandbox (`instruments.suspicious`). Each card carries a small network icon
+  (`img/chains/<chain_id>.png`; no `chain_id` in the snapshot means Ethereum). Filters: status (counter chips,
+  including ⚠ suspicious), source, network (shown once there is more than one),
   protocol, search. The "how it's collected" (spec or collector code), MR and decisions links
   point to private repositories and open for the team only. The registry is recomputed on the
   box every 10 minutes.

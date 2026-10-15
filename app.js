@@ -306,6 +306,16 @@ function instrumentCard(item) {
     item.issue_url && `<a href="${esc(item.issue_url)}" target="_blank" rel="noopener">decisions ↗</a>`,
     item.address && CHAINS[chainOf(item)] && `<a href="${esc(CHAINS[chainOf(item)].explorer)}${esc(item.address)}" target="_blank" rel="noopener" class="mono">${esc(shortAddress(item.address))} ↗</a>`,
   ].filter(Boolean);
+  // Fixed-term instruments (Pendle PT): the series runs market by market, each with a maturity;
+  // the snapshot carries the current market's maturity. Past maturity = the next term is not in
+  // the collection spec yet, so the series pauses until it is added.
+  const daysLeft = item.maturity ? Math.ceil((Date.parse(item.maturity) - Date.now()) / 86400000) : null;
+  const term =
+    daysLeft === null || Number.isNaN(daysLeft)
+      ? ''
+      : daysLeft > 0
+        ? `<div class="inst-term" title="fixed-term market: the rate is locked until maturity, then the series moves to the next term">fixed term · matures ${esc(shortDate(item.maturity))} <span class="muted">· in ${daysLeft} day${daysLeft === 1 ? '' : 's'}</span></div>`
+        : `<div class="inst-term matured" title="the current market has matured; the series resumes when the next term is added to the collection spec">fixed term · matured ${esc(shortDate(item.maturity))} <span class="muted">· waiting for the next term</span></div>`;
   const oddNote = odd.length
     ? `<div class="odd" title="${esc(RANGE_HINT)}">⚠ suspicious: ${odd.map((code) => esc(SUSPICIOUS[code].label)).join(' · ')}</div>`
     : '';
@@ -318,6 +328,7 @@ function instrumentCard(item) {
       <span class="status ${esc(item.status)}">${s.sign} ${esc(s.one)}</span>
     </div>
     ${oddNote}
+    ${term}
     ${progress}
     <div class="inst-metrics">${metrics
       .map(

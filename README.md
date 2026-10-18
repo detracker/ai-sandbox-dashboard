@@ -25,7 +25,10 @@ the repository into a dump.
 
 ## What the page shows
 
-Four tabs; the tab and the filters live in `#hash`, so a view can be shared as a link:
+Four tabs; the tab and the filters live in `#hash`, so a view can be shared as a link.
+A snapshot may carry `manifest.tabs` — the tabs its factory has (set by the domain pack,
+`export_hooks.ExportHooks.manifest` in ai-sandbox); without it every tab is shown, as before.
+The DefiDash snapshot has no manifest:
 
 - **Instruments** (default) — everything collected into the analytics database: added by the
   agents and the legacy collection. The status is derived from data freshness (collectors run

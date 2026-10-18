@@ -59,6 +59,18 @@ function chainIcon(id) {
 
 const ACTIVE = ['proposed', 'analyzing', 'spec_ready', 'critiquing', 'needs_rework', 'approved', 'implementing', 'blocked'];
 
+const ALL_TABS = ['instruments', 'pipeline', 'health', 'log'];
+
+// Which tabs the snapshot's factory has: `manifest.tabs` from the domain pack (step 7 of the
+// agent-factory decoupling). No manifest — every tab, exactly as before; the Instruments tab is
+// the DefiDash registry and a factory without one simply leaves it out of its manifest.
+function tabsOf(data) {
+  const listed = data && data.manifest && Array.isArray(data.manifest.tabs) ? data.manifest.tabs : null;
+  if (!listed) return ALL_TABS;
+  const known = ALL_TABS.filter((tab) => listed.includes(tab));
+  return known.length ? known : ALL_TABS;
+}
+
 const state = { tab: 'instruments', status: 'all', source: 'agents', protocol: 'all', chain: 'all', q: '', history: 'all', stage: 'all', result: 'all', agent: 'all' };
 let snapshot = null;
 
@@ -69,7 +81,7 @@ function readHash() {
   for (const key of Object.keys(state)) {
     if (params.has(key)) state[key] = params.get(key);
   }
-  if (!['instruments', 'pipeline', 'health', 'log'].includes(state.tab)) state.tab = 'instruments';
+  if (!ALL_TABS.includes(state.tab)) state.tab = 'instruments';
 }
 
 function writeHash() {
@@ -163,12 +175,15 @@ function renderHealth(data) {
 }
 
 function renderTabs(data) {
+  const shown = tabsOf(data);
+  if (!shown.includes(state.tab)) state.tab = shown[0];
   for (const button of document.querySelectorAll('[data-tab]')) {
     const active = button.dataset.tab === state.tab;
     button.classList.toggle('active', active);
+    button.classList.toggle('hidden', !shown.includes(button.dataset.tab));
     button.setAttribute('aria-selected', active);
   }
-  for (const tab of ['instruments', 'pipeline', 'health', 'log']) {
+  for (const tab of ALL_TABS) {
     $(`panel-${tab}`).classList.toggle('hidden', tab !== state.tab);
   }
   const items = data.instruments || [];

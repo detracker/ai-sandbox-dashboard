@@ -47,6 +47,8 @@ const oddCodes = (item) => (item.suspicious || []).filter((code) => SUSPICIOUS[c
 const CHAINS = {
   1: { name: 'Ethereum', icon: 'img/chains/1.png', explorer: 'https://etherscan.io/address/' },
   4663: { name: 'Robinhood Chain', icon: 'img/chains/4663.png', explorer: 'https://robinhoodchain.blockscout.com/address/' },
+  8453: { name: 'Base', icon: 'img/chains/8453.svg', explorer: 'https://basescan.org/address/' },
+  42161: { name: 'Arbitrum One', icon: 'img/chains/42161.png', explorer: 'https://arbiscan.io/address/' },
 };
 const chainOf = (item) => (item.chain_id === undefined ? 1 : item.chain_id);
 const chainName = (id) => CHAINS[id]?.name || (id ? `chain ${id}` : 'unknown network');

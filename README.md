@@ -46,6 +46,13 @@ The DefiDash snapshot has no manifest:
   box every 10 minutes.
 - **Pipeline** — the funnel (discovered → screened out → in progress → awaiting decision →
   implemented → collecting), what awaits a decision, what is running now, history with a filter.
+  The *external refs* column (candidates from golden v3 on; a dash before) shows how many
+  outside measurements of the candidate's metrics the `reference` role found and their classes
+  (API — the protocol's own API, UI — its site, DefiLlama), and — after the orchestrator has
+  recounted golden — how many reference pairs agree (`pairs 3/4`). A `shadow` tag means the
+  pairs are shown but do not block the candidate (`golden_external_mode`, ai-sandbox).
+  Snapshot fields: `external_refs`, `external_classes`, `external_pairs`,
+  `external_pairs_passed`, `external_mode` (`defi_metrics_export.Export.candidate_extra`).
 - **Health** — every external dependency of the sandbox, grouped (Blockchain, Data, Agents,
   Delivery, Box): state (ok / degraded / down), a summary with numbers (head block age,
   latencies, last write into the database, stalled instruments, last publish, free disk…), what

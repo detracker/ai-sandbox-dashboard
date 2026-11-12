@@ -393,8 +393,8 @@ function renderPipeline(data) {
   $('active-count').textContent = active.length ? `· ${active.length}` : '';
   $('active').innerHTML = active.length
     ? table(
-        ['candidate', 'status', 'for', 'protocol', 'round'],
-        active.map((row) => [cell(row.id, 'id'), badge(row.status), cell(humanAge(row.minutes_in_status)), cell(row.protocol || '—'), cell(row.round ?? '—', 'num')]),
+        ['candidate', 'status', 'for', 'protocol', 'round', 'external refs'],
+        active.map((row) => [cell(row.id, 'id'), badge(row.status), cell(humanAge(row.minutes_in_status)), cell(row.protocol || '—'), cell(row.round ?? '—', 'num'), refsCell(row)]),
       )
     : '<p class="muted">nothing in progress — the researcher searches once a day</p>';
 
@@ -413,7 +413,7 @@ function renderPipeline(data) {
     .sort((a, b) => (a.minutes_in_status ?? 1e9) - (b.minutes_in_status ?? 1e9));
   $('history').innerHTML = finished.length
     ? table(
-        ['candidate', 'outcome', 'when', { text: 'protocol', cls: 'wide' }],
+        ['candidate', 'outcome', 'when', { text: 'protocol', cls: 'wide' }, 'external refs'],
         finished.map((row) => [
           cell(row.id, 'id'),
           row.status === 'done'
@@ -423,9 +423,36 @@ function renderPipeline(data) {
               : badge('rejected', 'rejected'),
           cell(`${humanAge(row.minutes_in_status)} ago`),
           cell(row.protocol || '—', 'wide'),
+          refsCell(row),
         ]),
       )
     : '<p class="muted">empty</p>';
+}
+
+// External golden references (ai-sandbox golden v3, the `reference` role): how many outside
+// measurements of the candidate's metrics were found, of which classes, and — once the
+// orchestrator has recounted golden — how many reference pairs agree. In shadow mode the pairs
+// are shown but do not block a candidate. Fields are absent before v3: show a dash, not "0".
+const REF_CLASSES = { protocol_api: 'API', web_ui: 'UI', defillama: 'DefiLlama' };
+
+function refsText(row) {
+  if (row.external_refs === undefined || row.external_refs === null) return null;
+  const classes = (row.external_classes || []).map((c) => REF_CLASSES[c] || c).join(', ');
+  let text = `${row.external_refs} ext${classes ? ` · ${classes}` : ''}`;
+  if (row.external_pairs !== null && row.external_pairs !== undefined) {
+    text += ` · pairs ${row.external_pairs_passed ?? 0}/${row.external_pairs}`;
+  }
+  return text;
+}
+
+function refsCell(row) {
+  const text = refsText(row);
+  if (text === null) return cell('—', 'muted');
+  const shadow = row.external_mode === 'shadow'
+    ? ' <span class="tag" title="shadow mode: reference pairs are shown but do not affect golden">shadow</span>'
+    : '';
+  const title = 'external golden references found by the reference role (API / site / DefiLlama)';
+  return `<td><span title="${esc(title)}">${esc(text)}</span>${shadow}</td>`;
 }
 
 function renderAwaiting(rows) {
@@ -436,7 +463,7 @@ function renderAwaiting(rows) {
         <span class="await-id">${esc(row.id)}</span>
         <span>${esc(row.protocol || '')}</span>
         <span class="await-age">waiting ${humanAge(row.minutes_in_status)}</span>
-        <span class="muted">verdict ${esc(row.verdict || '—')}${row.findings ? `, ${row.findings} findings` : ''}</span>
+        <span class="muted">verdict ${esc(row.verdict || '—')}${row.findings ? `, ${row.findings} findings` : ''}${refsText(row) !== null ? ` · refs ${esc(refsText(row))}` : ''}</span>
       </div>`,
     )
     .join('');
